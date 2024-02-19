@@ -1,14 +1,19 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import {Meals} from "../../type";
+import {MealApi, Meals} from "../../type";
 import axiosApi from "../../axiosApi";
+import Spinner from "../../components/Spinner/Spinner";
+import AlertMeal from "../../components/AlertMeal/AlertMeal";
 
 const Foods: React.FC = () => {
   const [meals, setMeals] = useState<Meals[]>([]);
+  const [lauding, setLauding] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   const fetchMealsApi = useCallback(async () => {
     try {
-      const {data: response} = await axiosApi.get<Meals | null>(".json");
+      setLauding(true);
+      const {data: response} = await axiosApi.get<MealApi | null>(".json");
       if (response) {
         setMeals(Object.keys(response).map((id) => ({
           ...response[id],
@@ -18,7 +23,7 @@ const Foods: React.FC = () => {
         setMeals([]);
       }
     } finally {
-      console.log("");
+      setLauding(false);
     }
   }, []);
 
@@ -27,22 +32,30 @@ const Foods: React.FC = () => {
   }, [fetchMealsApi]);
 
   const deleteMeal = async (id: string) => {
+    setIsActive(true);
     await axiosApi.delete(`/${id}.json`);
     void fetchMealsApi();
+    setIsActive(false);
   };
 
-  return (
-    <div>
-      <Link to={`/add`} className={"btn btn-secondary"}>Add new meal</Link>
+  const isDisabled = (isActive) ? "disabled" : "";
+
+  return (lauding) ? <Spinner/> : (
+    <div className={"d-flex flex-column"}>
+      <Link to={`/add`} className={`btn btn-secondary ms-auto ${isDisabled}`}>Add new meal</Link>
       <div>
-        <h3>Foods</h3>
+        <h3 className={"mb-4"}>Foods</h3>
         <div>
           {meals.map((meal) => {
-            return <div key={meal.id} className={"alert alert-primary"}>
-              {meal.meal}
-              <Link to={`/edit/${meal.id}`} className={"btn btn-secondary"}>Edit</Link>
-              <button type={"button"} onClick={() => deleteMeal(meal.id)} className={"btn btn-danger"}>Delete</button>
-            </div>;
+            return (
+              <AlertMeal
+                key={meal.id}
+                meal={meal}
+                isDisabled={isDisabled}
+                isActive={isActive}
+                deleteMeal={deleteMeal}
+              />
+            );
           })}
         </div>
       </div>

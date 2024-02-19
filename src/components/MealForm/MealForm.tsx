@@ -3,6 +3,8 @@ import {MEAL_TIME} from "../../constants";
 import {Meal, MealApi} from "../../type";
 import axiosApi from "../../axiosApi";
 import {useNavigate, useParams} from "react-router-dom";
+import Spinner from "../Spinner/Spinner";
+import BtnSpinner from "../BtnSpinner/BtnSpinner";
 
 const defaultMeal: Meal = {
   mealTime: "Breakfast",
@@ -13,13 +15,16 @@ const MealForm: React.FC = () => {
   const navigate = useNavigate();
   const {id} = useParams();
   const [meal, setMeal] = useState<Meal>(defaultMeal);
+  const [lauding, setLauding] = useState(false);
+  const [btnLauding, setBtnLauding] = useState(false);
 
   const fetchMealApi = useCallback(async () => {
     try {
+      setLauding(true);
       const {data: response} = await axiosApi.get<MealApi | string>(`/${id}.json`);
       setMeal(response);
     } finally {
-      console.log("");
+      setLauding(false);
     }
   }, [id]);
 
@@ -30,28 +35,31 @@ const MealForm: React.FC = () => {
     }));
   };
   const addNewMeal = async (e: FormEvent) => {
+    setBtnLauding(true);
     e.preventDefault();
     await axiosApi.post(".json", {...meal});
     setMeal(defaultMeal);
     navigate("/");
   };
 
-  const editMeal = async (e:FormEvent)=> {
+  const editMeal = async (e: FormEvent) => {
+    setBtnLauding(true);
     e.preventDefault();
     await axiosApi.put(`/${id}.json`, {...meal});
     setMeal(defaultMeal);
     void fetchMealApi();
+    setBtnLauding(false);
   };
 
-
-
   useEffect(() => {
-    if(id) {
+    if (id) {
       void fetchMealApi();
     }
   }, [fetchMealApi, id]);
 
-  return (
+  const btn = (!id) ? "Add" : "Edit";
+
+  return (lauding) ? <Spinner/> : (
     <form onSubmit={(!id) ? addNewMeal : editMeal} className={"form-control d-flex flex-column gap-3"}>
       <div>
         <select
@@ -87,8 +95,9 @@ const MealForm: React.FC = () => {
       <button
         type={"submit"}
         className={"btn ms-auto btn-secondary"}
+        disabled={btnLauding}
       >
-        {(!id) ? "Add" : "Edit"}
+        {(btnLauding) ? <BtnSpinner/> : btn}
       </button>
     </form>
   );
