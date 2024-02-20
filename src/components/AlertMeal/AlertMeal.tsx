@@ -34,27 +34,27 @@ const AlertMeal: React.FC<Props> = ({meal, btnId, isDisabled, isActive, deleteMe
   };
 
   return (
-    <div key={meal.id} className={"alertMeal alert d-flex flex-column gap-3"}>
+    <div key={meal.id} className={"alertMeal bg-white alert d-flex flex-column gap-3"}>
       <div className={"d-flex"}>
         <div className={"col-9"}>
           <span className={"text-success"}>{meal.mealTime}</span>
         </div>
         <div className={"col d-flex align-items-center justify-content-between"}>
-        <span className={"text-break text-primary"}>
+        <span className={"text-break"}>
           {meal.calories}:
-          <strong className={"text-danger"}> kcal</strong>
+          <strong> kcal</strong>
         </span>
           <div className={" d-flex flex-column gap-2"}>
             <Link
               to={`/edit/${meal.id}`}
-              className={`btn btn-success p-0 ${isDisabled}`}
+              className={`btn p-0 ${isDisabled}`}
             >
               <span style={styleBtnEdit}></span>
             </Link>
 
             <button
               type={"button"}
-              className={"btn btn-danger p-0 d-flex align-items-center gap-1"}
+              className={"btn p-0 d-flex align-items-center gap-1"}
               onClick={() => deleteMeal(meal.id)}
               disabled={isActive}
             >
@@ -64,7 +64,7 @@ const AlertMeal: React.FC<Props> = ({meal, btnId, isDisabled, isActive, deleteMe
           </div>
         </div>
       </div>
-      <div className={"text-break overflow-y-auto text-primary"} style={{maxHeight: 100}}>
+      <div className={"text-break overflow-y-auto"} style={{maxHeight: 100}}>
         {meal.meal}
       </div>
     </div>

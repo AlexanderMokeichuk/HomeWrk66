@@ -62,7 +62,11 @@ const MealForm: React.FC = () => {
   const btn = (!id) ? "Save" : "Edit";
 
   return (lauding) ? <Spinner/> : (
-    <form onSubmit={(!id) ? addNewMeal : editMeal} className={"form-control d-flex flex-column gap-3"}>
+    <form
+      onSubmit={(!id) ? addNewMeal : editMeal}
+      className={"form-control rounded-4 mt-5 d-flex m-auto flex-column gap-3"}
+      style={{width: 520}}
+    >
       <div>
         <select
           className={"form-select"}
@@ -79,6 +83,7 @@ const MealForm: React.FC = () => {
         <textarea
           name={"meal"}
           className={"form-control"}
+          style={{minHeight: 100}}
           required
           value={meal.meal}
           onChange={changeMeal}
@@ -90,13 +95,14 @@ const MealForm: React.FC = () => {
           name={"calories"}
           required
           className={"form-control"}
+          style={{width: 100}}
           value={meal.calories}
           onChange={changeMeal}
         />
       </div>
       <button
         type={"submit"}
-        className={"btn ms-auto btn-secondary d-flex align-items-center"}
+        className={"btn ms-auto btn-success d-flex align-items-center"}
         disabled={btnLauding}
       >
         {(btnLauding) ? <BtnSpinner/> : undefined}

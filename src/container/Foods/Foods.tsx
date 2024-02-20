@@ -54,16 +54,16 @@ const Foods: React.FC = () => {
     <div className={"d-flex flex-column"}>
       <div className={"d-flex align-items-center"}>
         {(meals.length)
-          ? <h3 className={"text-success"}>
+          ? <h3 className={"text-primary"}>
             Total calories:{" "}
-            <span className={"text-primary"}>
-            {totalPrice}
-              <strong className={"text-danger"}> kcal</strong>
-          </span>
+            <strong className={"bg-white text-success"}>
+              {totalPrice}{" "}
+              kcal
+            </strong>
           </h3>
           : undefined
         }
-        <Link to={`/add`} className={`ms-auto btn btn-success ${isDisabled}`}>Add new meal</Link>
+        <Link to={`/add`} className={`ms-auto btn btn-primary ${isDisabled}`}>Add new meal</Link>
       </div>
       <div className={"mt-3"}>
         <h3 className={"mb-4 text-primary"}>Foods</h3>
