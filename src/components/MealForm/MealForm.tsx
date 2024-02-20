@@ -1,6 +1,6 @@
 import React, {FormEvent, useCallback, useEffect, useState} from "react";
 import {MEAL_TIME} from "../../constants";
-import {Meal, MealApi} from "../../type";
+import {Meal} from "../../type";
 import axiosApi from "../../axiosApi";
 import {useNavigate, useParams} from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
@@ -21,8 +21,10 @@ const MealForm: React.FC = () => {
   const fetchMealApi = useCallback(async () => {
     try {
       setLauding(true);
-      const {data: response} = await axiosApi.get<MealApi | string>(`/${id}.json`);
-      setMeal(response);
+      const {data: response} = await axiosApi.get<Meal | null>(`/${id}.json`);
+      if (response) {
+        setMeal(response);
+      }
     } finally {
       setLauding(false);
     }
@@ -57,7 +59,7 @@ const MealForm: React.FC = () => {
     }
   }, [fetchMealApi, id]);
 
-  const btn = (!id) ? "Add" : "Edit";
+  const btn = (!id) ? "Save" : "Edit";
 
   return (lauding) ? <Spinner/> : (
     <form onSubmit={(!id) ? addNewMeal : editMeal} className={"form-control d-flex flex-column gap-3"}>
@@ -94,10 +96,11 @@ const MealForm: React.FC = () => {
       </div>
       <button
         type={"submit"}
-        className={"btn ms-auto btn-secondary"}
+        className={"btn ms-auto btn-secondary d-flex align-items-center"}
         disabled={btnLauding}
       >
-        {(btnLauding) ? <BtnSpinner/> : btn}
+        {(btnLauding) ? <BtnSpinner/> : undefined}
+        {btn}
       </button>
     </form>
   );
